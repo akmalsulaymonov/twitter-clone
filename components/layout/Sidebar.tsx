@@ -4,8 +4,12 @@ import { FaUser } from 'react-icons/fa';
 import SidebarLogo from './SidebarLogo';
 import SidebarItem from './SidebarItem';
 import SidebarTweetButton from './SidebarTweetButton';
+import useCurrentUser from '@/hooks/useCurrentUser';
+import { signOut } from 'next-auth/react';
 
 const Sidebar = () => {
+
+    const { data: currentUser } = useCurrentUser();
 
     const items = [
         {
@@ -16,12 +20,14 @@ const Sidebar = () => {
         {
             label: 'Notifications',
             href: '/notifications',
-            icon: BsBellFill
+            icon: BsBellFill,
+            auth: true
         },
         {
             label: 'Profile',
             href: '/users/123',
-            icon: FaUser
+            icon: FaUser,
+            auth: true
         }
     ];
 
@@ -33,10 +39,20 @@ const Sidebar = () => {
                     <SidebarLogo />
                     {   
                         items.map((item) => (
-                            <SidebarItem key={item.href} href={item.href} label={item.label} icon={item.icon} />
+                            <SidebarItem 
+                                key={item.href} 
+                                href={item.href} 
+                                label={item.label} 
+                                icon={item.icon} 
+                                auth={item.auth}
+                            />
                         ))
                     }
-                    <SidebarItem onClick={ () => {} } label="Logout" icon={BiLogOut} />
+
+                    {
+                        currentUser && (<SidebarItem onClick={ () => signOut() } label="Logout" icon={BiLogOut} />)
+                    }
+                    
                     <SidebarTweetButton />
                 </div>
             </div>
